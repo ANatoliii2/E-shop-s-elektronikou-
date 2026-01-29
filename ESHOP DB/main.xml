@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="./sproject_html.xsl"?>
+<!DOCTYPE sproject SYSTEM "sproject.dtd">
+<sproject>
+    <course database="Oracle" version="11">
+        <cname>Databázové systémy</cname>
+            <code>BI-DBS.21</code>
+            <semester>DBS-2025</semester>
+            <seminar>Pondělí 12:45, Oba týdny, paralelka 202510</seminar>
+    </course>
+        <author>
+            <aname>Anatolii Shyrokov</aname>
+            <uname>xshya004</uname>
+            <email>xshya004@studenti.czu.cz</email>
+        </author>
+    <content>
+        <declaration>I declare that I have developed my semestral work independently. All the sources I used are listed in the section References.</declaration>
+            <title>Databáze e-shopu s elektronikou-návrh datového modelu a prvních dotazů</title>
+        <description>
+            <title>Popis</title>
+                    <para>V této první iteraci jsem navrhl(a) základní strukturu databáze pro modelový e-shop s elektronikou. Cílem bylo vytvořit jednoduchý, ale realistický datový model, který umožní evidovat zákazníky, jejich objednávky, nabízené produkty a jednotlivé položky objednávek. Navrhl(a) jsem čtyři hlavní tabulky: **Zákazník**, **Produkt**, **Objednávka** a **Položka_objednávky**.</para>
+                    <para></para>
+                    <para>Tabulka **Zákazník** uchovává základní údaje o klientech (jméno, e-mail, adresa), tabulka **Produkt** obsahuje název, cenu a kategorii výrobku. Mezi entitami **Objednávka** a **Produkt** existuje vztah M:N, který je realizován přes tabulku **Položka_objednávky**, kde se eviduje množství zakoupených kusů a jednotková cena v okamžiku nákupu. Primární a cizí klíče zajišťují integritu dat, např. *Objednávka.id_zákazníka → Zákazník.id.*</para>
+                    <para></para>
+                    <para>V této fázi jsem také definoval(a) tři přirozené dotazy, které testují funkčnost návrhu – analýzu objednávek, chování zákazníků a nejprodávanější produkty. Testovací data budou zahrnovat různé kategorie produktů (např. mobilní telefony, notebooky, příslušenství) a různý počet objednávek na zákazníka.</para>
+                    <para></para>
+                    <para>V další iteraci plánuji doplnit tabulky **Dodavatel** a **Hodnocení produktu**, protože to považuji za velmi důležité. Také chci přidat časová razítka (datum vytvoření/odeslání objednávky) a rozšířit sadu SQL dotazů o agregační funkce a filtrace podle kategorií. Cílem je, aby databáze umožnila jednoduše vyhodnocovat prodejnost produktů, aktivitu zákazníků, analyzovat, co se prodává více a co méně, a sledovat vývoj tržeb v čase.</para>
+                    <para></para>
+                    <para></para>
+        </description>
+        <data_model>
+            <title>Conceptual schema</title>
+            <dm_picture>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="conceptual_schema.png"/>
+                    </imageobject>
+                </mediaobject>
+            </dm_picture>
+            <dm_discussion>
+                        <para>V mém konceptuálním schématu jsem žádné smyčky neobjevil.</para>
+                        <para>  Všechny entity jsou propojené jen přes vztahy, které dávají smysl podle zadání, a nikde nevzniká kruhové napojení, které by model komplikovalo.</para>
+                        <para>Vztahy jsem nastavil  tak, že každá entita má jasně daný směr a kardinalitu, takže nedochází k tomu, že by se některé entity navzájem odkazovaly v kruhu.</para>
+                        <para>Model je díky tomu přehledný a neměl by způsobovat problémy při převodu na logický model.</para>
+            </dm_discussion>
+        </data_model>
+        <relational_model>
+            <title>Relační schema</title>
+            <rm_picture>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="relational_schema.png"/>
+                    </imageobject>
+                </mediaobject>
+            </rm_picture>
+        </relational_model>
+        <queries>
+            <title>Dotazy</title>
+            <dotazy>
+                    <dotaz dotaz_id="D2">
+                        <popis_dotazu>
+                                <para> Kteří zákazníci si objednali více než tři různé produkty?  </para>
+                        </popis_dotazu>
+                            <relacni_algebra>Zamestnanec * { Vydej(id_vydejny=1)[id_zam] \ Vydej(id_vydejny!=1)[id_zam] }</relacni_algebra>
+                    </dotaz>
+                    <dotaz dotaz_id="D1">
+                        <popis_dotazu>
+                                <para> Který produkt se prodává nejčastěji a v jaké kategorii se nachází?  </para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D3">
+                        <popis_dotazu>
+                                <para>Jaký je průměrný počet objednávek na jednoho zákazníka?
+</para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D4">
+                        <popis_dotazu>
+                                <para>Vypsat všechny objednávky, který vytvořil konkretní zákazník.</para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D5">
+                        <popis_dotazu>
+                                <para>Zobrazit všechny produkty, které patři do vybrané kategorie.</para>
+                        </popis_dotazu>
+                            <sql>SELECT p.nazev, k.nazev AS kategorie
+FROM produkt p
+JOIN kategorie k ON p.id_kategorie = k.id
+WHERE k.nazev = &apos;Elektronika&apos;;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D6">
+                        <popis_dotazu>
+                                <para>Spočitat průměrný počet hvězdiček, které má vybrany produkt. </para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D7">
+                        <popis_dotazu>
+                                <para>Najit nejprodavanější produkty podle celkoveho počtu objednaných kusu. </para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D8">
+                        <popis_dotazu>
+                                <para>Najít zákazníky, kteří napsali alespoň jedno hodnocení. </para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D9">
+                        <popis_dotazu>
+                                <para>Zjistit  aktualní celkové množství  konkrétního produktu ve všech skladech. </para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D10">
+                        <popis_dotazu>
+                                <para>Vypsat všech položky jedné objednávky( produkty, množství, jednotková cena).</para>
+                        </popis_dotazu>
+                    </dotaz>
+                    <dotaz dotaz_id="D11">
+                        <popis_dotazu>
+                                <para>Seznam jmen všech zákazníků.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>Zakaznik[jmeno]</relacni_algebra>
+                            <sql>SELECT DISTINCT jmeno from Zakaznik;
+</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D12">
+                        <popis_dotazu>
+                                <para>Názvy produktů dražšich něž 1000 </para>
+                        </popis_dotazu>
+                            <relacni_algebra>Produkt(cena &gt; 1000)[nazev]</relacni_algebra>
+                            <sql>SELECT DISTINCT nazev FROM Produkt WHERE cena &gt; 1000; </sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D13">
+                        <popis_dotazu>
+                                <para>ID všech zákazníků nebo ID všech zaměstnanců</para>
+                        </popis_dotazu>
+                            <relacni_algebra>Zakaznik[id]∪Zamestnanec[id]</relacni_algebra>
+                            <sql>SELECT id FROM Zakaznik UNION SELECT id FROM Zamestnanec;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D15">
+                        <popis_dotazu>
+                                <para>Datum objednávky a jméno zákazníka.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{{objednavka [datum_vytvoreni -&gt; datum_objednavky, id_zakaznik]} * {zakaznik [id -&gt; id_zakaznik, jmeno]}} [datum_objednavky, jmeno]</relacni_algebra>
+                            <sql>SELECT DISTINCT o.datum_vytvoreni AS datum_objednavky, z.jmeno FROM objednavka o JOIN zakaznik z ON o.id_zakaznik = z.id;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D16">
+                        <popis_dotazu>
+                                <para>ID produktů, které ještě nikdo nehodnotil</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{PRODUKT [id]} \ {HODNOCENI_PRODUKTU [id_produkt -&gt; id]}</relacni_algebra>
+                            <sql>SELECT id FROM produkt EXCEPT SELECT id_produkt FROM hodnoceni_produktu;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D17">
+                        <popis_dotazu>
+                                <para>Jména produktů s cenou vyšší než 20 000.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{PRODUKT (cena &gt; 20000) [nazev]}</relacni_algebra>
+                            <sql>SELECT DISTINCT nazev FROM produkt WHERE cena &gt; 20000;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D19">
+                        <popis_dotazu>
+                                <para>Vypiš ID všech produktů, které se nenacházejí v žádném skladu.</para>
+                        </popis_dotazu>
+                            <sql>SELECT id FROM produkt EXCEPT SELECT id_produkt FROM sklad;
+SELECT id FROM produkt WHERE id NOT IN (SELECT id_produkt FROM sklad);
+SELECT p.id FROM produkt p WHERE NOT EXISTS (SELECT 1 FROM sklad s WHERE s.id_produkt = p.id);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D20">
+                        <popis_dotazu>
+                                <para>Vypiš jména všech zákazníků, kteří bydlí v Praze.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{zakaznik(adresa=&apos;Praha&apos;)[jmeno]}</relacni_algebra>
+                            <sql>SELECT DISTINCT jmeno FROM zakaznik WHERE adresa LIKE &apos;%Praha%&apos;;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D21">
+                        <popis_dotazu>
+                                <para>Vypiš ID produktů, které si zatím nikdo neobjednal</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{produkt [id]} \ {polozky_objednavky [id_produkt -&gt; id]}</relacni_algebra>
+                            <sql>SELECT id FROM produkt EXCEPT SELECT id_produkt FROM polozky_objednavky;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D22">
+                        <popis_dotazu>
+                                <para>Vypiš jména a pozice všech zaměstnanců, kteří mají mzdu vyšší než 50 000.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{zamestnanec(mzda &gt; 50000)[jmeno, pozice]}</relacni_algebra>
+                            <sql>SELECT DISTINCT jmeno, pozice FROM zamestnanec WHERE mzda &gt; 50000;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D23">
+                        <popis_dotazu>
+                                <para>Všechny možné kombinace zákazníků a skladů.</para>
+                        </popis_dotazu>
+                            <sql>SELECT z.jmeno, s.lokace FROM Zakaznik z CROSS JOIN Sklad s;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D25">
+                        <popis_dotazu>
+                                <para>Vypiš jméno a email zákazníka, který má ID rovno 1.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{zakaznik(id=1)[jmeno, email]}</relacni_algebra>
+                            <sql>SELECT jmeno, email FROM zakaznik WHERE id = 1;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D26">
+                        <popis_dotazu>
+                                <para>Seznam všech zákazníků, jejich hodnocení a názvy kategorií produktů, které hodnotili (včetně těch, co ještě nehodnotili).</para>
+                        </popis_dotazu>
+                            <sql>SELECT z.jmeno, h.komentar, kat.nazev_kategorie
+FROM zakaznik z
+LEFT JOIN hodnoceni_produktu h ON z.id = h.id_zakaznik
+LEFT JOIN (SELECT id, nazev AS nazev_kategorie FROM kategorie) AS kat 
+ON h.id_produkt IN (SELECT id FROM produkt WHERE id_kategorie = kat.id);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D27">
+                        <popis_dotazu>
+                                <para>Vypiš jména všech zaměstnanců a ID jejich objednávek (i ty bez nich) a u každého řádku zobraz celkový počet všech produktů v systému.</para>
+                        </popis_dotazu>
+                            <sql>SELECT z.jmeno, o.id, (SELECT COUNT(*) FROM produkt) AS celkovy_pocet_p
+FROM zamestnanec z 
+FULL OUTER JOIN objednavka o ON z.id = o.id_zamestnanec;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D29">
+                        <popis_dotazu>
+                                <para>Zvyš cenu o 10 % u všech produktů, které jsou aktuálně naskladněny v lokaci &apos;Praha&apos;.</para>
+                        </popis_dotazu>
+                            <sql>UPDATE produkt
+SET cena = cena * 1.1
+WHERE id IN (SELECT id_produkt FROM sklad WHERE lokace = &apos;Praha&apos;);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D30">
+                        <popis_dotazu>
+                                <para>Smaž všechna hodnocení produktů, která napsali zákazníci, jejichž ID se již nenachází v hlavní tabulce zákazníků.</para>
+                        </popis_dotazu>
+                            <sql>DELETE FROM hodnoceni_produktu
+WHERE id_zakaznik NOT IN (SELECT id FROM zakaznik);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D31">
+                        <popis_dotazu>
+                                <para>Vypiš názvy všech dodavatelů a ID produktů, které dodávají.</para>
+                        </popis_dotazu>
+                            <sql>SELECT d.nazev, dp.id_produkt FROM dodavatel d JOIN dodavatel_produktu dp ON d.id = dp.id_dodavatel;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D32">
+                        <popis_dotazu>
+                                <para>Seznam jmen zaměstnanců a jejich mezd nad 30 000 Kč, seřazený od nejvyšší.</para>
+                        </popis_dotazu>
+                            <sql>SELECT jmeno, mzda FROM zamestnanec WHERE mzda &gt; 30000 
+GROUP BY jmeno, mzda HAVING COUNT(*) &gt;= 1 ORDER BY mzda DESC;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D33">
+                        <popis_dotazu>
+                                <para>Vytvoř pohled prehled_dodavatelu, který zobrazuje jména dodavatelů a jejich telefony.</para>
+                        </popis_dotazu>
+                            <sql>CREATE OR REPLACE VIEW prehled_dodavatelu AS SELECT nazev, telefon FROM dodavatel;
+SELECT * FROM prehled_dodavatelu;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D34">
+                        <popis_dotazu>
+                                <para>Vypiš ID produktů, které jsou zároveň na skladě i v položkách objednávek.</para>
+                        </popis_dotazu>
+                            <sql>SELECT id_produkt FROM sklad INTERSECT SELECT id_produkt FROM polozky_objednavky;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D35">
+                        <popis_dotazu>
+                                <para>Vypiš všechny záznamy z přehledu statistik produktů, kde je cena vyšší než nula</para>
+                        </popis_dotazu>
+                            <sql>SELECT * FROM statistiky_produktu WHERE cena &gt; 0;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D36">
+                        <popis_dotazu>
+                                <para>Průměrná cena ze tří nejlevnějších produktů.</para>
+                        </popis_dotazu>
+                            <sql>SELECT AVG(sub.cena) FROM (SELECT cena FROM produkt ORDER BY cena ASC LIMIT 3) AS sub;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D37">
+                        <popis_dotazu>
+                                <para>Najdi jména dodavatelů, kteří dodávají úplně všechny produkty, které máme v nabídce.</para>
+                        </popis_dotazu>
+                            <sql>SELECT d.nazev FROM dodavatel d 
+JOIN dodavatel_produktu dp ON d.id = dp.id_dodavatel 
+GROUP BY d.id, d.nazev 
+HAVING COUNT(DISTINCT dp.id_produkt) = (SELECT COUNT(*) FROM produkt);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D38">
+                        <popis_dotazu>
+                                <para>Vypiš všechny údaje o produktech a jejich zásobách na skladě pomocí přirozeného spojení.</para>
+                        </popis_dotazu>
+                            <sql>SELECT * FROM produkt NATURAL JOIN sklad;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D39">
+                        <popis_dotazu>
+                                <para>Vypiš názvy kategorií, které obsahují všechny produkty z tabulky produktů.</para>
+                        </popis_dotazu>
+                            <sql>SELECT k.nazev
+FROM kategorie k
+WHERE NOT EXISTS (
+    SELECT p.id FROM produkt p
+    EXCEPT
+    SELECT p2.id FROM produkt p2 WHERE p2.id_kategorie = k.id
+);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D41">
+                        <popis_dotazu>
+                                <para>Vlož nového zákazníka s názvem &apos;VIP Klient&apos;, který bude mít stejnou adresu jako zákazník číslo 1.</para>
+                        </popis_dotazu>
+                            <sql>INSERT INTO Zakaznik (id, jmeno, email, adresa)
+SELECT 99, &apos;VIP Klient&apos;, &apos;vip@firma.cz&apos;, adresa
+FROM Zakaznik
+WHERE id = 1
+ON CONFLICT (id) DO NOTHING;</sql>
+                    </dotaz>
+            </dotazy>
+            <pokryti_dotazu>
+                        <radek>
+                            <kategorie>A</kategorie>
+                            <odkazy>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D15">D15</link>
+                                    <link url="#D26">D26</link>
+                                    <link url="#D27">D27</link>
+                                    <link url="#D31">D31</link>
+                                    <link url="#D37">D37</link>
+                                    <link url="#D38">D38</link>
+                            </odkazy>
+                            <kategorie_popis>A - Pozitivní dotaz nad spojením alespoň dvou tabulek</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>AR</kategorie>
+                            <odkazy>
+                                    <link url="#D15">D15</link>
+                            </odkazy>
+                            <kategorie_popis>A (RA) - Pozitivní dotaz nad spojením alespoň dvou tabulek</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>B</kategorie>
+                            <odkazy>
+                                    <link url="#D12">D12</link>
+                            </odkazy>
+                            <kategorie_popis>B - Negativní dotaz nad spojením alespoň dvou tabulek</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>C</kategorie>
+                            <odkazy>
+                                    <link url="#D5">D5</link>
+                            </odkazy>
+                            <kategorie_popis>C - Vyber ty, kteří mají vztah POUZE k ...</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>CN</kategorie>
+                            <odkazy>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D8">D8</link>
+                                    <link url="#D10">D10</link>
+                            </odkazy>
+                            <kategorie_popis>C (NATURAL) - Vyber ty, kteří mají vztah POUZE k ...</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>D1</kategorie>
+                            <odkazy>
+                                    <link url="#D39">D39</link>
+                            </odkazy>
+                            <kategorie_popis>D1 - Vyber ty, kteří/které jsou ve vztahu se všemi - dotaz s univerzální kvantifikací</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>D1N</kategorie>
+                            <odkazy>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D7">D7</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D39">D39</link>
+                            </odkazy>
+                            <kategorie_popis>D1 (NATURAL) - Vyber ty, kteří/které jsou ve vztahu se všemi - dotaz s univerzální kvantifikací</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>D2</kategorie>
+                            <odkazy>
+                                    <link url="#D37">D37</link>
+                            </odkazy>
+                            <kategorie_popis>D2 - Kontrola výsledku dotazu z kategorie D1</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F1</kategorie>
+                            <odkazy>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D15">D15</link>
+                                    <link url="#D31">D31</link>
+                                    <link url="#D37">D37</link>
+                            </odkazy>
+                            <kategorie_popis>F1 - JOIN ON</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F1R</kategorie>
+                            <odkazy>
+                                    <link url="#D15">D15</link>
+                            </odkazy>
+                            <kategorie_popis>F1 (RA) - JOIN ON</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F2</kategorie>
+                            <odkazy>
+                                    <link url="#D38">D38</link>
+                            </odkazy>
+                            <kategorie_popis>F2 - NATURAL JOIN|JOIN USING</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F3</kategorie>
+                            <odkazy>
+                                    <link url="#D23">D23</link>
+                            </odkazy>
+                            <kategorie_popis>F3 - CROSS JOIN</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F4</kategorie>
+                            <odkazy>
+                                    <link url="#D26">D26</link>
+                            </odkazy>
+                            <kategorie_popis>F4 - LEFT|RIGHT OUTER JOIN</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F5</kategorie>
+                            <odkazy>
+                                    <link url="#D27">D27</link>
+                            </odkazy>
+                            <kategorie_popis>F5 - FULL (OUTER) JOIN</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G1</kategorie>
+                            <odkazy>
+                                    <link url="#D19">D19</link>
+                                    <link url="#D29">D29</link>
+                                    <link url="#D30">D30</link>
+                                    <link url="#D39">D39</link>
+                            </odkazy>
+                            <kategorie_popis>G1 - Vnořený dotaz v klauzuli WHERE</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G2</kategorie>
+                            <odkazy>
+                                    <link url="#D36">D36</link>
+                            </odkazy>
+                            <kategorie_popis>G2 - Vnořený dotaz v klauzuli FROM</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G3</kategorie>
+                            <odkazy>
+                                    <link url="#D27">D27</link>
+                            </odkazy>
+                            <kategorie_popis>G3 - Vnořený dotaz v klauzuli SELECT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G4</kategorie>
+                            <odkazy>
+                                    <link url="#D19">D19</link>
+                                    <link url="#D39">D39</link>
+                            </odkazy>
+                            <kategorie_popis>G4 - Vztažený vnořený dotaz (EXISTS, NOT EXISTS)</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H1</kategorie>
+                            <odkazy>
+                                    <link url="#D13">D13</link>
+                            </odkazy>
+                            <kategorie_popis>H1 - Množinové sjednocení - UNION</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H2</kategorie>
+                            <odkazy>
+                                    <link url="#D16">D16</link>
+                                    <link url="#D19">D19</link>
+                                    <link url="#D21">D21</link>
+                                    <link url="#D39">D39</link>
+                            </odkazy>
+                            <kategorie_popis>H2 - Množinový rozdíl - MINUS nebo EXCEPT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H2R</kategorie>
+                            <odkazy>
+                                    <link url="#D16">D16</link>
+                                    <link url="#D21">D21</link>
+                            </odkazy>
+                            <kategorie_popis>H2 (RA) - Množinový rozdíl - MINUS nebo EXCEPT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H3</kategorie>
+                            <odkazy>
+                                    <link url="#D34">D34</link>
+                            </odkazy>
+                            <kategorie_popis>H3 - Množinový průnik - INTERSECT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>I1</kategorie>
+                            <odkazy>
+                                    <link url="#D27">D27</link>
+                                    <link url="#D32">D32</link>
+                                    <link url="#D36">D36</link>
+                                    <link url="#D37">D37</link>
+                            </odkazy>
+                            <kategorie_popis>I1 - Agregační funkce (count|sum|min|max|avg)</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>I2</kategorie>
+                            <odkazy>
+                                    <link url="#D32">D32</link>
+                                    <link url="#D37">D37</link>
+                            </odkazy>
+                            <kategorie_popis>I2 - Agregační funkce nad seskupenými řádky - GROUP BY (HAVING)</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>J</kategorie>
+                            <odkazy>
+                                    <link url="#D19">D19</link>
+                            </odkazy>
+                            <kategorie_popis>J - Stejný dotaz ve třech různých formulacích SQL</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>K</kategorie>
+                            <odkazy>
+                                    <link url="#D32">D32</link>
+                            </odkazy>
+                            <kategorie_popis>K - Všechny klauzule v 1 dotazu - SELECT FROM WHERE GROUP BY HAVING ORDER BY</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>L</kategorie>
+                            <odkazy>
+                                    <link url="#D33">D33</link>
+                            </odkazy>
+                            <kategorie_popis>L - VIEW</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>M</kategorie>
+                            <odkazy>
+                                    <link url="#D35">D35</link>
+                            </odkazy>
+                            <kategorie_popis>M - Dotaz nad pohledem</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>N</kategorie>
+                            <odkazy>
+                                    <link url="#D41">D41</link>
+                            </odkazy>
+                            <kategorie_popis>N - INSERT, který vloží do některé tabulky množinu řádků, které jsou vybrány dotazem z vybraných tabulek (příkaz INSERT, ve kterém je klauzule VALUES nahrazena vnořeným poddotazem.</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>O</kategorie>
+                            <odkazy>
+                                    <link url="#D29">D29</link>
+                            </odkazy>
+                            <kategorie_popis>O - UPDATE s vnořeným SELECT příkazem</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>P</kategorie>
+                            <odkazy>
+                                    <link url="#D30">D30</link>
+                            </odkazy>
+                            <kategorie_popis>P - DELETE s vnořeným SELECT příkazem</kategorie_popis>
+                        </radek>
+            </pokryti_dotazu>
+        </queries>
+        <scripts>
+            <title>Scripts</title>
+            <para>
+                <link url="./create.sql">create.sql</link>
+            </para>
+            <para>
+                <link url="./insert.sql">insert.sql</link>
+            </para>
+        </scripts>
+        <conclussions>
+            <title>Závěr</title>
+                    <para>Prace na moje databazi mě velmi  bavila. I kdyz jsem od začatku až do konce bojoval zejmena s dotazy a psaním RA, nakonec se mi vše podařilo uspešně vyřešit. Jsem hrdý na výsledek své praci, a na to co jsem se během projektu naučil. </para>
+        </conclussions>
+        <references>
+            <title>Zdroje</title>
+                    <para>https://www.youtube.com/watch?v=xhzk7eqKXJE, https://www.youtube.com/@jirkahunka, </para>
+                    <para>Jirka hunka Relační Algebra.</para>
+                    <para>https://www.postgresql.org/docs/current/sql-commands.html,</para>
+                    <para></para>
+                    <para>https://www.dbdesigner.net/</para>
+                    <para></para>
+                    <para>W3Schools SQL Tutorial: Praktické příklady pro spojování tabulek (JOIN) a agregační funkce (HAVING).</para>
+                    <para>https://www.w3schools.com/sql/</para>
+                    <para>Learn Relational Algebra (RelaX Tool Documentation):</para>
+                    <para>https://www.youtube.com/watch?v=FlBNWIdveIE&amp;list=PLOskWMbmSI-4uR2sI3JFerE04lKRsWQ8i</para>
+                    <para>Michal Valenta DBS - krátká videa o všem.</para>
+                    <para>FIT ČVUT – BI-DBS (Kurzové materiály):</para>
+                    <para>https://bilatest.fit.cvut.cz/</para>
+                    <para>Uvod do databazí.</para>
+                    <para>https://www.okskoleni.cz/kurzy/detail/DB-FND?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=OKskoleni_DO_longterm_search_DSA%20(all)&amp;utm_id=21736338411&amp;gad_source=1&amp;gad_campaignid=21736338411&amp;gbraid=0AAAAA9ZxhYjWhNOc9-T_R8mBBKlrVG8oF&amp;gclid=CjwKCAiA09jKBhB9EiwAgB8l-BPv-9_8vDyKy5a2a_ObCLgP34utcjr00lNm6JaJ8lmWXMiOclD7lxoCvdEQAvD_BwE</para>
+                    <para>Školení databazi v ruskem jazyce. Strašně dobrý vysvetlení tam maji akorat je to pouze v ruštině.</para>
+                    <para>https://www.youtube.com/watch?v=5sG9kmXYsKU&amp;t=4170s</para>
+                    <para>https://www.youtube.com/watch?v=mvpDRH37IBQ</para>
+                    <para>https://www.youtube.com/watch?v=GfeWkn6WhE8</para>
+                    <para>https://dbdiagram.io</para>
+                    <para></para>
+        </references>
+    </content>
+</sproject>
