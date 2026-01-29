@@ -52,14 +52,17 @@ Využití pohledů (CREATE VIEW) pro statistiky produktů a přehled dodavatelů
 Ošetření konfliktů při vkládání dat pomocí ON CONFLICT DO NOTHING.
 <img width="1187" height="747" alt="image" src="https://github.com/user-attachments/assets/699abc21-6884-4f2e-a8ce-2ae159b5ab15" />
 
-Getting Started
-Protože školní portál DBS je neveřejný, můžete projekt spustit lokálně pomocí přiložených skriptů:
+Chcete-li si projekt spustit lokálně ve svém PostgreSQL prostředí, postupujte podle těchto kroků:
 
-Spusťte create.sql pro vytvoření schématu tabulek.
+Clone the repository: Stáhněte si projekt do svého počítače.
 
-Spusťte insert.sql pro naplnění databáze testovacími daty.
+Create a PostgreSQL database: Vytvořte si novou prázdnou databázi (např. v pgAdminu nebo přes terminál).
 
-SQL dotazy a relační algebru naleznete v dokumentaci projektu.
+Run create.sql: Spusťte tento skript, který vytvoří všech 10 tabulek (od Zakaznik po Hodnoceni_produktu) a definuje vztahy.
+
+Run insert.sql: Spusťte tento skript, aby se databáze naplnila testovacími daty (produkty jako iPhone 15, zákazníci a vzorové objednávky).
+
+Explore the data: Nyní můžete spouštět SQL dotazy (např. ty, které jsou popsané v souboru main.xml) přímo ve vašem SQL editoru.
 
 
 
