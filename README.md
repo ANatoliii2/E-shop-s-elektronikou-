@@ -1,4 +1,4 @@
-Tady je finální verze tvého **README.md** souboru. Je napsaná v profesionální angličtině, která je na GitHubu standardem, a používá strukturu, kterou personalisté a vývojáři očekávají.
+
 
 ---
 
