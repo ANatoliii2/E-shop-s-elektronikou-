@@ -1,68 +1,57 @@
-🛒 Electronics E-shop Database System
-Tento projekt obsahuje kompletní návrh a implementaci relační databáze pro internetový obchod s elektronikou, vytvořený v rámci studia na ČZU. Systém pokrývá kompletní životní cyklus od správy produktů a skladů až po hodnocení zákazníky.
-+2
+Tady je finální verze tvého **README.md** souboru. Je napsaná v profesionální angličtině, která je na GitHubu standardem, a používá strukturu, kterou personalisté a vývojáři očekávají.
 
-Platform Overview
-Databáze umožňuje efektivní správu e-shopu v těchto klíčových oblastech:
+---
 
-Product Management: Hierarchické členění elektroniky do kategorií s technickými parametry jako EAN kód a záruční lhůta.
+# 🛒 Electronics E-shop Database System
 
-Order Processing: Sledování stavu objednávek, způsobů dopravy a platebních metod.
+A comprehensive relational database solution designed to manage an e-commerce platform specializing in electronics. This project covers the entire data lifecycle, from inventory management and supplier logistics to customer order processing and feedback analysis.
 
-Inventory & Logistics: Evidence skladových zásob v různých lokacích a vazba na konkrétní dodavatele.
+## 📋 Platform Architecture
 
-Customer Feedback: Systém hodnocení produktů (1–5 hvězdiček) s textovými komentáři.
+The system is built on a robust relational model consisting of 10 interconnected tables:
 
-HR System: Správa zaměstnanců, kteří vyřizují jednotlivé objednávky.
+* **Product Management:** Hierarchical categorization of electronics with technical specifications (EAN, warranty, weight).
+* **Sales Workflow:** Complete tracking of orders, including payment methods, shipping statuses, and detailed itemized lists.
+* **Inventory & Logistics:** Multi-location warehouse tracking linked to specific suppliers and purchase prices.
+* **User & HR Management:** Management of customer profiles and staff members responsible for order fulfillment.
+* **Customer Feedback:** A dedicated rating and review system to track product satisfaction.
 
-Database Structure
-Databáze se skládá z 10 propojených tabulek zajišťujících integritu dat:
+## 🛠 Technical Stack
 
-Users & Staff: Zakaznik, Zamestnanec 
+* **Database Engine:** Originally developed for **Oracle 11**, fully compatible with **PostgreSQL**.
+* **Integrity:** Strict enforcement of Referential Integrity through foreign keys and constraints.
+* **Views:** Implementation of virtual tables for supplier overviews and product statistics.
 
-Product Engine: Produkt, Kategorie, Sklad 
+## 📊 Database Design
 
-Sales Workflow: Objednavka, Polozky_objednavky 
+### Conceptual Schema
 
-Supply Chain: Dodavatel, Dodavatel_produktu 
+The logical structure of the database, ensuring a clean data flow without circular dependencies.
+<img width="767" height="750" alt="image" src="https://github.com/user-attachments/assets/a7a257e3-cdd4-4ca4-a406-dad5980860bb" />
 
-Reviews: Hodnoceni_produktu
+### Relational Schema
 
-<img width="839" height="753" alt="image" src="https://github.com/user-attachments/assets/b48d7b80-b185-4276-bd92-7445992c84a0" />
+The technical mapping of the database, detailing primary/foreign keys and data types.
+<img width="1209" height="734" alt="image" src="https://github.com/user-attachments/assets/6813c4be-b35c-49e5-8428-f41a98e77e68" />
+## 🔍 Data Analysis (SQL Queries)
 
-Key Features
-Advanced Analytics
+This project implements **41 analytical queries** covering a wide range of business requirements:
 
-V projektu je implementováno 41 SQL dotazů pokrývajících širokou škálu analýz:
+* **Advanced Joins:** `LEFT`, `RIGHT`, and `FULL OUTER JOIN` for complex data merging.
+* **Set Operations:** `UNION`, `EXCEPT`, and `INTERSECT` for data comparison.
+* **Subqueries:** Nested `SELECT` statements in `WHERE`, `FROM`, and `SELECT` clauses, including correlated subqueries using `EXISTS`.
+* **Aggregations:** Sophisticated statistics using `GROUP BY` and `HAVING` clauses.
 
-Identifikace nejprodávanějších produktů.
+## 🚀 Getting Started
 
-Výpočty průměrných hodnocení a statistik prodejů.
-+1
+To replicate this database environment locally:
 
-Detekce produktů, které nejsou skladem nebo nebyly nikdy objednány.
-<img width="753" height="644" alt="image" src="https://github.com/user-attachments/assets/8faa1e98-0758-4bff-b382-1bb3ca026be0" />
+1. **Clone the repository:** Download all project files to your local machine.
+2. **Database Setup:** Create a new database in your preferred SQL environment (PostgreSQL/Oracle).
+3. **Build Schema:** Execute `create.sql` to generate all tables and relations.
+4. **Populate Data:** Execute `insert.sql` to import sample datasets, including products like iPhone 15 and various customer profiles.
+5. **Analyze:** Run the queries provided in the `main.xml` documentation to explore the data insights.
 
-Technical Integrity
-
-Implementace cizích klíčů (REFERENCES) pro zajištění konzistence dat.
-
-Využití pohledů (CREATE VIEW) pro statistiky produktů a přehled dodavatelů.
-
-Ošetření konfliktů při vkládání dat pomocí ON CONFLICT DO NOTHING.
-<img width="1187" height="747" alt="image" src="https://github.com/user-attachments/assets/699abc21-6884-4f2e-a8ce-2ae159b5ab15" />
-
-Chcete-li si projekt spustit lokálně ve svém PostgreSQL prostředí, postupujte podle těchto kroků:
-
-Clone the repository: Stáhněte si projekt do svého počítače.
-
-Create a PostgreSQL database: Vytvořte si novou prázdnou databázi (např. v pgAdminu nebo přes terminál).
-
-Run create.sql: Spusťte tento skript, který vytvoří všech 10 tabulek (od Zakaznik po Hodnoceni_produktu) a definuje vztahy.
-
-Run insert.sql: Spusťte tento skript, aby se databáze naplnila testovacími daty (produkty jako iPhone 15, zákazníci a vzorové objednávky).
-
-Explore the data: Nyní můžete spouštět SQL dotazy (např. ty, které jsou popsané v souboru main.xml) přímo ve vašem SQL editoru.
-
+---
 
 
